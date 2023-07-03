@@ -1,0 +1,10 @@
+.my-icon{
+    fill: rgba(var(--bs-primary-rgb),var(--bs-text-opacity))!important;
+}
+.state-label{
+    margin: 20px;
+}
+.btn-save{
+    background-color: #00bac7 !important;
+    border: none;
+}
