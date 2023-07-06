@@ -30,51 +30,28 @@ class ProjectsController extends Controller{
             $notifications = $notificationModel->findBy(['active' => 1, 'destinataire' => $_SESSION['id']]);
             $notification = $notificationModel->deactiveNotifications($_SESSION['id']);
         
-            return $this->render('projects/index', compact('pageTitle', 'projects', 'staff', 'categories', 'notification', 'notifications', 'staffs'));
+            return $this->render('projects/index', compact('pageTitle', 'projects', 'staff', 'staffs', 'categories', 'notification', 'notifications', 'staffs'));
         
-        } else {
-            $admin = $adminModel->find( $_SESSION['id']);
-            $staffs = $staffModel->findAll();
-
-            $projectModel = new ProjectsModel;
-            $projects = $projectModel->findAll();
-
-            $categoryModel = new CategoriesModel;
-            $categories = $categoryModel->findAll();
-            return $this->render('projects/index', compact('pageTitle', 'projects', 'admin', 'categories', 'staffs'), 'admin_layout');
-        }
+        } 
    
     }
 
     public function Form_project() {
 
         $pageTitle = 'Add new project';
+
         $staffModel = new StaffsModel;
-        $adminModel = new AdminsModel;
+        
         $notificationModel = new NotificationsModel;
 
         if ($_SESSION['login'] != "admin") {
-            
             $staff = $staffModel->find( $_SESSION['id']);
-
-            $staffs = $staffModel->findAll();
-
-            $categoryModel = new CategoriesModel;
-            $categories = $categoryModel->findAll();
+           
             $notifications = $notificationModel->findBy(['active' => 1, 'destinataire' => $_SESSION['id']]);
             $notification = $notificationModel->deactiveNotifications($_SESSION['id']);
-
-            return $this->render('projects/add_project', compact('pageTitle', 'staff', 'staffs', 'categories', 'notification', 'notifications'));
-        } else {
-            $admin = $adminModel->find( $_SESSION['id']);
-
-            $staffs = $staffModel->findAll();
-
-            $categoryModel = new CategoriesModel;
-            $categories = $categoryModel->findAll();
-
-            return $this->render('projects/add_project', compact('pageTitle', 'admin', 'staffs', 'categories'), 'admin_layout');
+            return $this->render('projects/add_project', compact('pageTitle','staff', 'notifications', 'notification'));
         }
+        
     }
 
     public function create_project() {
@@ -134,7 +111,7 @@ class ProjectsController extends Controller{
                         $message = 'Un nouveau projet vous a ete assigne veillez consulter les details';
                         $date = date('y-m-d g:i:s');
 
-                        $notifModel->setName($onproject->name)
+                        $notifModel->setName('project')
                                 ->setMessage($message)
                                 ->setDestinataire($onproject->executor)
                                 ->setReference($onproject->id)
@@ -176,7 +153,7 @@ class ProjectsController extends Controller{
                 $message = 'Un nouveau projet vous a ete assigne veillez consulter les details';
                 $date = date('y-m-d g:i:s');
 
-                $notifModel->setName($onproject->name)
+                $notifModel->setName('project')
                         ->setMessage($message)
                         ->setDestinataire($onproject->executor)
                         ->setReference($onproject->id)
@@ -322,6 +299,7 @@ class ProjectsController extends Controller{
             $projectModel = new ProjectsModel;
             // On va chercher 1 annonce
             $project = $projectModel->find($id);
+            $projects = $projectModel->findAll();
 
             $date1 = strtotime($project->start);
             //$date2 = strtotime($project->end);
@@ -339,10 +317,11 @@ class ProjectsController extends Controller{
             
             $staffModel = new StaffsModel;
             $staff = $staffModel->find( $_SESSION['id']);
-
+            $staffs = $staffModel->findAll();
+ 
             
             // On envoie à la vue
-            $this->render('projects/show_project', compact('pageTitle','project', 'staff', 'notifications', 'notification'));
+            $this->render('projects/show_project', compact('pageTitle', 'project', 'projects', 'staff', 'staffs', 'notifications', 'notification'));
         } else {
             // On instancie le modèle
             $projectModel = new ProjectsModel;
@@ -389,21 +368,12 @@ class ProjectsController extends Controller{
  
     public function create_category() {
         
-        //if (Model::validate($_POST, ['name','description'])){
-            //le formulaire est complet
-            //on se protege contre les filles xss
-            if(isset($_POST['save_category'])){
-                $name = strip_tags($_POST['name']);
+        //le formulaire est complet
+        //on se protege contre les filles xss
+        if(Model::validate($_POST, ['name', 'description'])){
+            $name = strip_tags($_POST['name']);
             $description = strip_tags($_POST['description']);
-            if($name == NULL || $description == NULL)
-            {
-                $res = [
-                    'status' => 422,
-                    'message' => 'All fields are mandatory'
-                ];
-                echo json_encode($res);
-                return;
-            }
+        
             $category = new CategoriesModel;
                             
             //on hydrate
@@ -412,27 +382,11 @@ class ProjectsController extends Controller{
             //on enregistre
             $category->create();
 
-            if($category)
-    {
-        $res = [
-            'status' => 200,
-            'message' => 'Student Created Successfully'
-        ];
-        echo json_encode($res);
-        return;
-    }
-    else
-    {
-        $res = [
-            'status' => 500,
-            'message' => 'Student Not Created'
-        ];
-        echo json_encode($res);
-        return;
-    }
-            }
-            
-       // }
+            header('Location: /projects/all_category?success=true');
+            exit;
+        
+        }
+
     }
 
     public function edit_category(int $id) {
@@ -513,6 +467,37 @@ class ProjectsController extends Controller{
 
         header('Location: /projects/show_project/'.$notifica->reference);
         exit;
+    }
+
+    public function change_category(int $id) {
+        $categoryModel = new CategoriesModel;
+        $category = $categoryModel->find($id);
+
+        $projectModel = new ProjectsModel;
+        $projects = $projectModel->findAll();
+
+        if (Model::validate($_POST, ['new_category'])){
+            //le formulaire est complet
+            //on se protege contre les filles xss
+            $categor = new CategoriesModel;
+
+            $categor->delete($category->id);
+            $catego = strip_tags($_POST['new_category']);
+            foreach ($projects as $project) {
+                if ($project->category == $id) {
+                    $projectModif = new ProjectsModel;         
+                    //on hydrate
+                    $projectModif->setId($project->id)
+                        ->setCategory($catego);
+                    //on enregistre
+                    $projectModif->update();
+                }
+            }
+
+            
+
+            header('Location: '.$_SERVER['HTTP_REFERER']);
+        }
     }
  
 }

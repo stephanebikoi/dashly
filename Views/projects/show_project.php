@@ -6,7 +6,7 @@
     <div class="dropdown d-flex align-items-center justify-content-center" id="themeSwitcher">
         <h1 class="h2 d-flex align-items-center justify-content-between">
             <span>
-                <button type="button" class="btn btn-sm btn-primary ms-4" data-bs-toggle="modal" data-bs-target="#projetModal" id="btnAddTask">Add New task</button>
+                <button type="button" class="btn btn-sm btn-primary ms-4" data-bs-toggle="modal" data-bs-target="#taskModal" id="btnAddTask">Add New task</button>
             </span>
         </h1>
     </div>
@@ -237,6 +237,116 @@
                     </tbody>
                 </table>
             </div>           
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="taskModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form class="needs-validation" novalidate action="/tasks/create_task_to_project/<?= $project->id ?>" method="POST"  enctype="multipart/form-data">
+                <!-- Header -->
+                <div class="modal-header pb-0">
+                    <h3 id="taskModalTitle" class="modal-title">Create New task</h3>
+
+                    <!-- Button -->
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- End Header -->
+
+                <!-- Body -->
+                <div class="modal-body">
+                    
+                    <div class="row mb-4">
+                        <div class="col-lg-6">
+                            <label for="name" class="col-form-label">Task name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                            <div class="invalid-feedback">Please add a  task name</div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label for="priority" class="col-form-label">task priority</label>
+                            <select class="form-select" id="priority" name="priority" required>
+                                <option > </option>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a  priority</div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label for="assign" class="col-form-label">task executor</label>
+                            <select class="form-select" id="assign" name="assign" required>
+                                <option > </option>
+                                <?php foreach ($staffs as $staff) : ?>
+                                    <option value="<?=$staff->id ?>" ><?= $staff->firstname . ' ' . $staff->lastname ?></option>
+                                <?php endforeach ?>
+                            </select>
+                            <div class="invalid-feedback">Please select the executor</div>
+                        </div>
+                    </div> <!-- / .row -->
+
+                    <div class="row mb-4">
+                        <div class="col-lg-6">
+                            <label for="start" class="col-form-label">Start of the task</label>
+                            <input type="date" class="form-control" id="start" value="" name="start" required>
+                            <div class="invalid-feedback">Please add a  start date of task</div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label for="timestart" class="col-form-label">Time start of the task</label>
+                            <input type="time" class="form-control" id="timestart" value="" name="timestart" required>
+                            <div class="invalid-feedback">Please add a  time start of task</div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label for="end" class="col-form-label">End of the task</label>
+                            <input type="date" class="form-control" id="end" value="" name="end" required>
+                            <div class="invalid-feedback">Please add a  end date of task</div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label for="timeend" class="col-form-label">Time end of the task</label>
+                            <input type="time" class="form-control" id="timeend" value="" name="timeend" required>
+                            <div class="invalid-feedback">Please add a  time end of task</div>
+                        </div>
+
+                    </div> <!-- / .row -->
+
+                    <div class="row mb-4">
+                        <div class="col-lg">
+                            <label for="start" class="col-form-label"> task description</label>
+                            <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                            <div class="invalid-feedback">Please add a  description of task</div>
+                        </div>
+                    </div> <!-- / .row -->
+
+                    <div class="row mb-4">
+                        <div class="col-lg">
+                            <label for="start" class="col-form-label"> Attachement task </label>
+                            <input type="file" class="form-control" id="attachement" name="attachement">
+                        </div>
+                    </div> <!-- / .row -->
+                </div>
+                <!-- End Body -->
+
+                <!-- Footer -->
+                <div class="modal-footer pt-0">
+                    <div class="d-flex justify-content-end mt-5">
+                        <!-- Button -->
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-5">
+                        <!-- Button -->
+                        <button type="submit" class="btn btn-primary">Save task</button>
+                    </div>
+                    
+                </div>
+                <!-- End Footer -->
+            </form>
         </div>
     </div>
 </div>

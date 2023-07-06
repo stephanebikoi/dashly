@@ -4,6 +4,7 @@ namespace App\Controllers;
 use App\Models\StaffsModel;
 use App\Models\AdminsModel;
 use App\Models\ProjectsModel;
+use App\Models\TasksModel;
 use App\Models\NotificationsModel;
 use App\Models\Model;
 
@@ -59,84 +60,67 @@ class DashboardsController extends Controller{
 
         $staff = $staffModel->find($id);
         
-        if (Model::validate($_POST, ['lastname', 'firstname','otherfirstname', 'date', 'place','sex','address','email','phone'])){
+        if (isset($_FILES['profil']['name']) && !empty($_FILES['profil']['name'])) {
+            $img_name = $_FILES['profil']['name'];
+            $tmp_name = $_FILES['profil']['tmp_name'];
+            $error = $_FILES['profil']['error'];
+            if($error === 0){
+    
+                $img_ex = pathinfo($img_name, PATHINFO_EXTENSION);
+                $img_ex_to_lc = strtolower($img_ex);
+                $allowed_exs = array('jpg', 'jpeg', 'png');
+                if(in_array($img_ex_to_lc, $allowed_exs)){
+                    $new_img_name = uniqid().'.'.$img_ex_to_lc;
+                    $img_upload_path = '../Public/img/staffs/'.$new_img_name;
+                    move_uploaded_file($tmp_name, $img_upload_path);
+
+                    $staffModif = new StaffsModel;
+                            
+                    //on hydrate
+                    $staffModif->setId($staff->id)
+                        ->setProfil($new_img_name);
+                    //on enregistre
+                    $staffModif->update();
+
+                    header('Location: /dashboards/my_profil?success=true');
+                    exit;
+                } else {
+                    $em = "type de fichiers inconnu !";
+                    header("Location: /dashboards/my_profil?error=$em");
+                    exit;
+                } 
+            } else{
+                $em = "erreur iconnu !";
+                header("Location: /dashboards/my_profil?error=$em");
+                exit;
+            }
+        }
+    }
+
+    public function update_contact(int $id) {
+
+        $staffModel = new StaffsModel;
+
+        $staff = $staffModel->find($id);
+        
+        if (Model::validate($_POST, ['address','email','phone'])){
             //le formulaire est complet
             //on se protege contre les filles xss
-            $lastname = strip_tags($_POST['lastname']);
-            $firstname = strip_tags($_POST['firstname']);
-            $otherfirstname = strip_tags($_POST['otherfirstname']);
-            $date = strip_tags($_POST['date']);
-            $place = strip_tags($_POST['place']);
-            $sex = strip_tags($_POST['sex']);
             $address = strip_tags($_POST['address']);
             $email = strip_tags($_POST['email']);
             $phone = strip_tags($_POST['phone']);
 
-            if (isset($_FILES['profil']['name']) && !empty($_FILES['profil']['name'])) {
-                $img_name = $_FILES['profil']['name'];
-                $tmp_name = $_FILES['profil']['tmp_name'];
-                $error = $_FILES['profil']['error'];
-                if($error === 0){
-        
-                    $img_ex = pathinfo($img_name, PATHINFO_EXTENSION);
-                    $img_ex_to_lc = strtolower($img_ex);
-                    $allowed_exs = array('jpg', 'jpeg', 'png');
-                    if(in_array($img_ex_to_lc, $allowed_exs)){
-                        $new_img_name = uniqid().'.'.$img_ex_to_lc;
-                        $img_upload_path = '../Public/img/staffs/'.$new_img_name;
-                        move_uploaded_file($tmp_name, $img_upload_path);
+            $staffModif = new StaffsModel;
+                
+            //on hydrate
+            $staffModif->setId($staff->id)
+                ->setAddress($address)
+                ->setEmail($email)
+                ->setPhone($phone);
+            $staffModif->update();
 
-                        $staffModif = new StaffsModel;
-                            
-                        //on hydrate
-                        $staffModif->setId($staff->id)
-                            ->setFirstname($firstname)
-                            ->setOtherfirstname($otherfirstname)
-                            ->setLastname($lastname)
-                            ->setDateofbirth($date)
-                            ->setPlaceofbirth($place)
-                            ->setEmail($email)
-                            ->setSex($sex)
-                            ->setAddress($address)
-                            ->setEmail($email)
-                            ->setPhone($phone)
-                            ->setProfil($new_img_name);
-                        //on enregistre
-                        $staffModif->update();
-
-                        header('Location: /dashboards/my_profil?success=true');
-                        exit;
-                    } else {
-                        $em = "type de fichiers inconnu !";
-                        header("Location: /dashboards/my_profil?error=$em");
-                        exit;
-                    } 
-                } else{
-                    $em = "erreur iconnu !";
-                    header("Location: /dashboards/my_profil?error=$em");
-                    exit;
-                }
-            } else {
-                $staffModif = new StaffsModel;
-                            
-                //on hydrate
-                $staffModif->setId($staff->id)
-                    ->setFirstname($firstname)
-                    ->setOtherfirstname($otherfirstname)
-                    ->setLastname($lastname)
-                    ->setDateofbirth($date)
-                    ->setPlaceofbirth($place)
-                    ->setEmail($email)
-                    ->setSex($sex)
-                    ->setAddress($address)
-                    ->setEmail($email)
-                    ->setPhone($phone);
-                //on enregistre
-                $staffModif->update();
-
-                header('Location: /dashboards/my_profil?success=true');
-                exit;
-            }
+            header('Location: /dashboards/my_profil?success=true');
+            exit;
         }
     }
 
@@ -225,5 +209,26 @@ class DashboardsController extends Controller{
         $notification = $notificationModel->deactiveNotifications($_SESSION['id']);
 
         $this->render('dashboards/my_project', compact('pageTitle','staff', 'staffs', 'projects', 'notifications', 'notification'));
+    }
+
+    public function my_task () {
+
+        $pageTitle = 'my task';
+        $this->isAdmin();
+
+        $staffModel = new StaffsModel;
+        $notificationModel = new NotificationsModel;
+
+       
+        $staff = $staffModel->find( $_SESSION['id']);
+        $staffs = $staffModel->findAll();
+
+        $taskModel = new TasksModel;
+        $tasks = $taskModel->findBy(['executor' => $_SESSION['id']]);
+
+        $notifications = $notificationModel->findBy(['active' => 1, 'destinataire' => $_SESSION['id']]);
+        $notification = $notificationModel->deactiveNotifications($_SESSION['id']);
+
+        $this->render('dashboards/my_task', compact('pageTitle','staff', 'staffs', 'tasks', 'notifications', 'notification'));
     }
 }

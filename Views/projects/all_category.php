@@ -53,7 +53,7 @@
                                 <td class="email"><?= substr($category->description, 0 , 80) . ' ...' ?></td>
                                 <td class="date" data-signed="1627858800">
                                     <a class="p-3" href="/projects/edit_category/<?= $category->id ?>"><i class="fa fa-edit" aria-hidden="true"></i></a>
-                                    <a class="p-3" href="/projects/delete_category/<?= $category->id ?>"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                    <a class="p-3" href=""data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach?>
@@ -109,4 +109,80 @@
             </form>
         </div>
     </div>
+</div>
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-7" id="exampleModalToggleLabel">Delete the category <?= $category->name ?></h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body my-3">
+        <span>you are about to delete the category <?= $category->name ?> this may lead to the deletion of projects linked to this category.</span><br>
+        <span>what do you want to do?</span>
+      </div>
+      <div class="modal-footer pt-0">
+        <div class="row mb-4 py-3">
+            <div class="col-lg-4">
+                <div class="d-flex justify-content-end my-5">
+                    <!-- Button -->
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="d-flex justify-content-end my-5">
+                    <!-- Button -->
+                    <a href="/projects/delete_category/<?= $material->id?>" class="btn btn-danger">Deleted everything</a>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="d-flex justify-content-end my-5">
+                    <button class="btn btn-primary" data-bs-target="#staticBackdrop2" data-bs-toggle="modal">Assign to another</button>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade"id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">Delete the category <?= $category->name ?></h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form class="needs-validation" novalidate action="/projects/change_category/<?= $category->id ?>" method="POST">
+        <div class="modal-body">
+            <span>assign projects related to this category to another.</span><br><br>
+            <div class="row">
+                <div class="col-lg-6">
+                    <label for="category" class="col-form-label">New category for these projects</label>
+                </div>
+                <div class="col-lg-6">
+                    <select class="form-select" id="category" name="new_category" required>
+                        <option > </option>
+                        <?php foreach ($categories as $categ) : ?>
+                            <option value="<?=$categ->id ?>" ><?= $categ->name ?></option>
+                        <?php endforeach ?>
+                    </select>
+                    <div class="invalid-feedback">Please select a  category</div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="d-flex justify-content-end mt-5">
+                <!-- Button -->
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+            </div>
+
+            <div class="d-flex justify-content-end mt-5">
+                <!-- Button -->
+                <button type="submit" class="btn btn-primary">change category</button>
+            </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

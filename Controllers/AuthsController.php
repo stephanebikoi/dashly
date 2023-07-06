@@ -4,6 +4,7 @@ namespace App\Controllers;
 use App\Models\AdminsModel;
 use App\Models\Model;
 use App\Models\StaffsModel;
+use App\Models\FonctionsModel;
 
 class AuthsController extends Controller {
     
@@ -23,12 +24,17 @@ class AuthsController extends Controller {
             $staff = $staffsModel->getStaff(['username' => $username]);
 
             if (isset($staff) && !empty($staff)) {
+                $functionModel = new FonctionsModel;
+                $function = $functionModel->find($staff->function);
+                
                 if (password_verify($password, $staff->password)) {
+                    
+
                     $_SESSION['auth'] = true;
                     $_SESSION['id']=$staff->id;
                     $_SESSION['login']=$staff->username;
-                    $_SESSION['role']=$staff->role;
-                    $_SESSION['poste']= $staff->function;
+                    $_SESSION['poste']=$staff->role;
+                    $_SESSION['function']= $function->name;
         
                     return header('Location: /dashboards');
                 } else {

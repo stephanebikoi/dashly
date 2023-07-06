@@ -204,22 +204,6 @@
                 </div>
 
                 <div class="card-body">
-                <div class="row mb-4">
-                        <div class="col-lg-3">
-                            <label for="poste" class="col-form-label">Staff function</label>
-                        </div>
-
-                        <div class="col-lg">
-                            
-                            <select class="form-select" id="poste" name="poste" required>
-                                <option > </option>
-                                <?php foreach ($functions as $function) : ?>
-                                    <option value="<?=$function->id ?>" ><?= $function->name ?></option>
-                                <?php endforeach ?>
-                            </select>
-                            <div class="invalid-feedback">Please select a  function </div>
-                        </div>
-                    </div> <!-- / .row -->
 
                     <div class="row mb-4">
                         <div class="col-lg-3">

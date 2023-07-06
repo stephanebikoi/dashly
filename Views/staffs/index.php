@@ -46,36 +46,32 @@
                         </tr>
                     </thead>
                     <tbody class="list">
-                        <?php foreach ($staffs as $staff): 
-
-                            $functionModel = new App\Models\FonctionsModel;
-                            $onfunction = $functionModel->find($staff->function);
+                        <?php foreach ($staffs as $staf): 
 
                             $posteModel = new App\Models\PostesModel;
-                            $onposte = $posteModel->find($staff->role);
+                            $onposte = $posteModel->find($staf->role);
                             ?>
                             <tr>
-                                <td class="id"><?= $staff->staffnum ?></td>
+                                <td class="id"><?= $staf->staffnum ?></td>
                                 <td>
-                                    <?php if(empty($staff->profil)) {
-                                        $a = strtoupper(substr($staff->firstname, 0, 1));
-                                        $b = strtoupper(substr($staff->lastname, 0, 1)); ?>
+                                    <?php if(empty($staf->profil)) {
+                                        $a = strtoupper(substr($staf->firstname, 0, 1));
+                                        $b = strtoupper(substr($staf->lastname, 0, 1)); ?>
                                         <div class="avatar avatar-circle avatar-xs me-2">
                                             <span class="avatar-title text-bg-danger-soft" style="color: purple; width:40px; height:40px;"><?= $a.$b ?></span>
                                         </div>
                                     <?php } else { ?>
                                         <div class="avatar avatar-circle avatar-sm avatar-online">
-                                            <img src="/img/staffs/<?= $staff->profil ?>" alt="Profile picture" class="avatar-img" width="40" height="40">
+                                            <img src="/img/staffs/<?= $staf->profil ?>" alt="Profile picture" class="avatar-img" width="40" height="40">
                                         </div>
                                     <?php } ?>
-                                    <span class="name fw-bold mx-3"><?= $staff->firstname . ' '. $staff->otherfirstname . ' '. $staff->lastname ?></span>
+                                    <span class="name fw-bold mx-3"><?= $staf->firstname . ' '. $staf->otherfirstname . ' '. $staf->lastname ?></span>
                                 </td>
-                                <td class="email"><?= $onfunction->name ?></td>
                                 <td class="id"><?= $onposte->name ?></td>
                                 <td class="date" data-signed="1627858800">
-                                    <a class="p-3" href="/staffs/show_staff/<?= $staff->id ?>"><i class="fa fa-plus" aria-hidden="true"></i></a>
-                                    <a class="p-3" href="/staffs/edit/<?= $staff->id ?>"><i class="fa fa-edit" aria-hidden="true"></i></a>
-                                    <a class="p-3" href="/staffs/delete/<?= $staff->id ?>"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                    <a class="p-3" href="/staffs/show_staff/<?= $staf->id ?>"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                                    <a class="p-3" href="/staffs/edit/<?= $staf->id ?>"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                                    <a class="p-3" href="/staffs/delete/<?= $staf->id ?>"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach?>
@@ -167,18 +163,7 @@
                         </div>
 
                     </div> <!-- / .row -->
-                     
-                    <div class="row mb-4">
-                        <div class="col-lg-6">
-                            <label for="poste" class="col-form-label">Staff function</label>
-                            <select class="form-select" id="poste" name="poste" required>
-                                <option > </option>
-                                <?php foreach ($functions as $function) : ?>
-                                    <option value="<?=$function->id ?>" ><?= $function->name ?></option>
-                                <?php endforeach ?>
-                            </select>
-                        <div class="invalid-feedback">Please add a  function </div>
-                    </div>
+            
 
                     <div class="col-lg-6">
                         <label for="role" class="col-form-label">Staff poste</label>

@@ -92,8 +92,8 @@
 
                                 ?>
                                 <option  value="<?=$onstaff->id ?>" ><?= $onstaff->firstname . ' ' . $onstaff->lastname ?></option>
-                                <?php foreach ($staffs as $staff) : ?>
-                                    <option value="<?=$staff->id ?>" ><?= $staff->firstname . ' ' . $staff->lastname ?></option>
+                                <?php foreach ($staffs as $staf) : ?>
+                                    <option value="<?=$staf->id ?>" ><?= $staf->firstname . ' ' . $staf->lastname ?></option>
                                 <?php endforeach ?>
                             </select>
                             

@@ -306,64 +306,15 @@
                                 </a>
                                 <div class="collapse " id="pagesCollapse">
                                     <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a href="account.html" class="nav-link ">
-                                                <span>Account</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="user.html" class="nav-link ">
-                                                <span>User</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="pricing.html" class="nav-link ">
-                                                <span>Pricing</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="wizard.html" class="nav-link ">
-                                                <span>Wizard</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="help-center.html" class="nav-link ">
-                                                <span>Help Center</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="invoice.html" class="nav-link ">
-                                                <span>Invoice</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="api-keys.html" class="nav-link ">
-                                                <span>API Keys</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="maintenance.html" class="nav-link ">
-                                                <span>Maintenance</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="connect-apps.html" class="nav-link ">
-                                                <span>Connect Apps</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="landing.html" class="nav-link ">
-                                                <span>Landing Page</span>
-                                                <span class="badge text-bg-success rounded-pill ms-auto">New</span>
-                                            </a>
-                                        </li>
+                                        
                                     </ul>
                                 </div>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link " href="chat.html">
+                                <a class="nav-link " href="/chats">
                                     <svg viewBox="0 0 24 24" class="nav-link-icon" height="18" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M11.25,18.75a1.5,1.5,0,0,1-1.5-1.5V9.75a1.5,1.5,0,0,1,1.5-1.5h10.5a1.5,1.5,0,0,1,1.5,1.5v7.5a1.5,1.5,0,0,1-1.5,1.5h-1.5v4.5l-4.5-4.5Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M6.75,12.75l-3,3v-4.5H2.25a1.5,1.5,0,0,1-1.5-1.5V2.25A1.5,1.5,0,0,1,2.25.75h10.5a1.5,1.5,0,0,1,1.5,1.5v3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
                                     <span>Chat</span>
+                                    <span class="badge text-bg-primary badge-circle ms-3">7</span>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -415,6 +366,26 @@
                             </li>
                             <li class="nav-item w-100">
                                 <hr>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link " href="#materialCollapse" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="emailCollapse">
+                                <i class="fa fa-puzzle-piece nav-link-icon" aria-hidden="true"></i>
+                                    <span>Materials</span>
+                                </a>
+                                <div class="collapse " id="materialCollapse">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            <a href="/materials" class="nav-link ">
+                                                <span>all materials</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="/materials/from_material" class="nav-link ">
+                                                <span>add material</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </li>
                             <li class="nav-item">
                                 <a href="docs/index.html" class="nav-link">
@@ -597,7 +568,7 @@
                         <div class="list-group list-group-flush">
                             <?php if(count($notifications) >= 1) {
                                 foreach ($notifications as $notifica) : ?>
-                                    <a href="/projects/show_nofif/<?= $notifica->id ?>" class="list-group-item list-group-item-action">
+                                    <a href="<?= ($notifica->name === 'project' ) ? "/projects/show_nofif/{$notifica->id}": "/tasks/show_nofif/{$notifica->id}"  ?>" class="list-group-item list-group-item-action">
                                         <div class="d-flex">
                                             <div class="avatar avatar-circle avatar-xs me-2">
                                                 <span class="avatar-title text-bg-info-soft">MN</span>

@@ -118,7 +118,7 @@
                             <label for="project" class="col-form-label">task project</label>
                             <select class="form-select" id="project" name="project" required>
                                 <option > </option>
-                                <?php foreach ($categories as $project) : ?>
+                                <?php foreach ($projects as $project) : ?>
                                     <option value="<?=$project->id ?>" ><?= $project->name ?></option>
                                 <?php endforeach ?>
                             </select>
@@ -140,8 +140,8 @@
                             <label for="assign" class="col-form-label">task executor</label>
                             <select class="form-select" id="assign" name="assign" required>
                                 <option > </option>
-                                <?php foreach ($staffs as $staff) : ?>
-                                    <option value="<?=$staff->id ?>" ><?= $staff->firstname . ' ' . $staff->lastname ?></option>
+                                <?php foreach ($staffs as $staf) : ?>
+                                    <option value="<?=$staf->id ?>" ><?= $staf->firstname . ' ' . $staf->lastname ?></option>
                                 <?php endforeach ?>
                             </select>
                             <div class="invalid-feedback">Please select the executor</div>

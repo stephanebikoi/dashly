@@ -8,6 +8,7 @@ use App\Models\NotificationsModel;
 use App\Models\PostesModel;
 use App\Models\ProjectsModel;
 use App\Models\StaffsModel;
+use App\Models\TasksModel;
 
 class StaffsController extends Controller{
 
@@ -21,7 +22,7 @@ class StaffsController extends Controller{
         $posteModel = new PostesModel;
         $notificationModel = new NotificationsModel;
 
-        if ($_SESSION['login'] != "admin") {
+        if ($_SESSION['login'] !== "admin") {
             $staffs = $staffModel->findAll();
             $staff = $staffModel->find( $_SESSION['id']);
 
@@ -31,14 +32,7 @@ class StaffsController extends Controller{
             $notification = $notificationModel->deactiveNotifications($_SESSION['id']);
 
             return $this->render('staffs/index', compact('pageTitle','staffs', 'functions', 'postes', 'staff', 'notifications', 'notification'));
-        } else {
-            $admin = $adminModel->find( $_SESSION['id']);
-            $staffs = $staffModel->findAll();
-            $functions = $functionModel->findAll();
-            $postes = $posteModel->findAll();
-
-            return $this->render('staffs/index', compact('pageTitle','staffs', 'functions', 'postes', 'admin'), 'admin_layout');
-        }  
+        } 
     }
     public function Form_staff() {
 
@@ -71,7 +65,7 @@ class StaffsController extends Controller{
         
 
         //on verifi si le formulaire est complet
-        if (Model::validate($_POST, ['lastname', 'firstname','otherfirstname', 'date', 'place','sex','address','email','phone','poste', 'role'])){
+        if (Model::validate($_POST, ['lastname', 'firstname','otherfirstname', 'date', 'place','sex','address','email','phone', 'role'])){
             //le formulaire est complet
             //on se protege contre les filles xss
             $lastname = strip_tags($_POST['lastname']);
@@ -83,7 +77,6 @@ class StaffsController extends Controller{
             $address = strip_tags($_POST['address']);
             $email = strip_tags($_POST['email']);
             $phone = strip_tags($_POST['phone']);
-            $function = strip_tags($_POST['poste']);
             $role = strip_tags($_POST['role']);
 
             $pass = Model::passgen(8);
@@ -102,7 +95,6 @@ class StaffsController extends Controller{
                 ->setAddress($address)
                 ->setEmail($email)
                 ->setPhone($phone)
-                ->setFunction($function)
                 ->setRole($role)
                 ->setPassword($password);
             //on enregistre
@@ -166,8 +158,8 @@ class StaffsController extends Controller{
 
         if ($_SESSION['login'] != "admin") {
         
-            $staff = $staffModel->find($id);
-            $staf = $staffModel->find( $_SESSION['id']);
+            $staff = $staffModel->find( $_SESSION['id']);
+            $staf = $staffModel->find($id);
 
             $functions = $functionModel->findAll();
             $postes = $posteModel->findAll();
@@ -194,18 +186,35 @@ class StaffsController extends Controller{
 
         
         //on verifi si le formulaire est complet
-        if (Model::validate($_POST, ['function', 'poste','evaluation'])){
+        if (Model::validate($_POST, ['lastname', 'firstname','otherfirstname', 'date', 'place','sex','address','email','phone', 'role'])){
             //le formulaire est complet
             //on se protege contre les filles xss
-           echo 'bonjour'; $funtion = strip_tags($_POST['function']);
-            $poste = strip_tags($_POST['poste']);
+            $lastname = strip_tags($_POST['lastname']);
+            $firstname = strip_tags($_POST['firstname']);
+            $otherfirstname = strip_tags($_POST['otherfirstname']);
+            $date = strip_tags($_POST['date']);
+            $place = strip_tags($_POST['place']);
+            $sex = strip_tags($_POST['sex']);
+            $address = strip_tags($_POST['address']);
+            $email = strip_tags($_POST['email']);
+            $phone = strip_tags($_POST['phone']);
+            $role = strip_tags($_POST['role']);
             $evaluation = strip_tags($_POST['evaluation']);
 
             $staffModif = new StaffsModel;
 
             $staffModif->setId($staff->id)
-                ->setFunction($funtion)
-                ->setRole($poste)
+                ->setFirstname($firstname)
+                ->setOtherfirstname($otherfirstname)
+                ->setLastname($lastname)
+                ->setDateofbirth($date)
+                ->setPlaceofbirth($place)
+                ->setEmail($email)
+                ->setSex($sex)
+                ->setAddress($address)
+                ->setEmail($email)
+                ->setPhone($phone)
+                ->setRole($role)
                 ->setStaffevaluation($evaluation);
 
             $staffModif->update();
@@ -237,7 +246,7 @@ class StaffsController extends Controller{
         //$functionModel = new FonctionsModel;
         //$posteModel = new PostesModel;
 
-        if ($_SESSION['login'] != "admin") {
+        if ($_SESSION['login'] !== "admin") {
             //$staffs = $staffModel->findAll();
             $staff = $staffModel->find( $_SESSION['id']);
             // On va chercher 1 annonce
@@ -246,16 +255,14 @@ class StaffsController extends Controller{
             $projectModel = new ProjectsModel;
             $projects = $projectModel->findBy(['executor' => $_SESSION['id']]);
 
+            $taskModel = new TasksModel;
+            $tasks = $taskModel->findBy(['executor' => $_SESSION['id']]);
+
             $notifications = $notificationModel->findBy(['active' => 1, 'destinataire' => $_SESSION['id']]);
             $notification = $notificationModel->deactiveNotifications($_SESSION['id']);
         
             // On envoie à la vue
-            $this->render('staffs/show_staff', compact('pageTitle','staff', 'staf', 'projects', 'notifications', 'notification'));
-        } else {
-            $staff = $staffModel->find($id);
-            $admin = $adminModel->find( $_SESSION['id']);
-            // On envoie à la vue
-            $this->render('staffs/show_staff', compact('pageTitle','staff', 'admin'), 'admin_layout');
+            $this->render('staffs/show_staff', compact('pageTitle','staff', 'staf', 'projects', 'tasks', 'notifications', 'notification'));
         }
         
     }
